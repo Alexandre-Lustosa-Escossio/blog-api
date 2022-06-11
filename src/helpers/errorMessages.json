@@ -1,4 +1,5 @@
 {
   "missingFields": "Some required fields are missing",
-  "invalidFields": "Invalid fields"
+  "invalidFields": "Invalid fields",
+  "invalidDisplayName": "\"displayName\" length must be at least 8 characters long"
 }
