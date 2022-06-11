@@ -1,5 +1,7 @@
 {
   "missingFields": "Some required fields are missing",
   "invalidFields": "Invalid fields",
-  "invalidDisplayName": "\"displayName\" length must be at least 8 characters long"
+  "invalidDisplayName": "\"displayName\" length must be at least 8 characters long",
+  "invalidEmail": "\"email\" must be a valid email",
+  "invalidPassword": "\"password\" length must be at least 6 characters long"
 }
