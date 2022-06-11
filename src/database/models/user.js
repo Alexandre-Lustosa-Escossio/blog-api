@@ -23,6 +23,8 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       type: DataTypes.STRING
     }
+  }, {
+    timestamps: false
   })
   User.associate = (models) => {
     User.hasMany(models.BlogPost, {
