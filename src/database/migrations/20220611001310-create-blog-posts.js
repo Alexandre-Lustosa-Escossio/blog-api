@@ -14,11 +14,11 @@ module.exports = {
       },
       content: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.STRING
       },
       userId: {
         allowNull: false,
-        type: Sequelize.DATE,
+        type: Sequelize.INTEGER,
         references: {
           model: 'Users',
           foreignKey: 'id',
