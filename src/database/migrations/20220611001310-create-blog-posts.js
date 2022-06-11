@@ -9,13 +9,26 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       title: {
+        allowNull: false,
         type: Sequelize.STRING
       },
-      createdAt: {
+      content: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      userId: {
+        allowNull: false,
+        type: Sequelize.DATE,
+        references: {
+          model: 'Users',
+          foreignKey: 'id',
+        }
+      },
+      published: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      updated: {
         allowNull: false,
         type: Sequelize.DATE
       }
