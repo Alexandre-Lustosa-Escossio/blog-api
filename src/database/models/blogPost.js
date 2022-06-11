@@ -14,6 +14,10 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       type: DataTypes.STRING
     },
+    userId: {
+      allowNull: false,
+      type: DataTypes.INTEGER
+    },
     published: {
       allowNull: false,
       type: DataTypes.DATE
@@ -29,4 +33,5 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'userId'
     })
   }
+  return BlogPost
 };
