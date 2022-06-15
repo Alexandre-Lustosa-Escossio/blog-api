@@ -4,5 +4,7 @@
   "invalidDisplayName": "\"displayName\" length must be at least 8 characters long",
   "invalidEmail": "\"email\" must be a valid email",
   "invalidPassword": "\"password\" length must be at least 6 characters long",
-  "userAlreadyRegistered": "User already registered"
+  "userAlreadyRegistered": "User already registered",
+  "tokenNotFound": "Token not found",
+  "expiredOrInvalidToken": "Expired or invalid token"
 }

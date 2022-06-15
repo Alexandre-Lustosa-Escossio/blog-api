@@ -5,6 +5,7 @@ const { createUser, getAllUsers } = require('./controllers/userController');
 const { errorHandler } = require('./middlewares/errorHandler');
 const { loginValidator } = require('./middlewares/loginValidator');
 const createUserValidators = require('./middlewares/createUserValidators');
+const { validateToken } = require('./middlewares/tokenHandler');
 
 // não remova a variável `API_PORT` ou o `listen`
 const port = process.env.API_PORT || 3000;
@@ -16,7 +17,7 @@ app.get('/', (_request, response) => {
 
 app.post('/login', loginValidator, requestLogin);
 
-app.get('/user', getAllUsers);
+app.get('/user', validateToken, getAllUsers);
 app.post('/user', Object.values(createUserValidators), createUser);
 
 app.use(errorHandler);
