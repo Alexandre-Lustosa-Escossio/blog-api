@@ -1,5 +1,6 @@
 const { User } = require('../database/models');
 const errorMsgs = require('../helpers/errorMessages.json');
+const tokenHandler = require('../middlewares/tokenHandler');
 
 const requestLogin = async ({ email, password }) => {
   const response = await User.findOne({ where: { email, password } });
@@ -9,7 +10,8 @@ const requestLogin = async ({ email, password }) => {
     err.status = 400;
     throw err;
   }
-  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjp7ImlkIjo1LCJkaXNwbGF5TmFtZSI6InVzdWFyaW8gZGUgdGVzdGUiLCJlbWFpbCI6InRlc3RlQGVtYWlsLmNvbSIsImltYWdlIjoibnVsbCJ9LCJpYXQiOjE2MjAyNDQxODcsImV4cCI6MTYyMDY3NjE4N30.Roc4byj6mYakYqd9LTCozU1hd9k_Vw5IWKGL4hcCVG8';
+
+  const token = tokenHandler.generateToken(email);  
   return { token };
 };
 

@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken');
+require('dotenv/config');
 
 const generateToken = (user) => {
-  const secret = 'senhaMuitoSegura';
+  const secret = process.env.JWT_SECRET;
   const jwtConfig = {
     expiresIn: '7d',
     algorithm: 'HS256',
