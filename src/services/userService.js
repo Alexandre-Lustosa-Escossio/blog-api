@@ -8,6 +8,12 @@ const createUser = async (body) => {
     return { token };
 };
 
+const getAllUsers = async () => {
+  const response = await User.findAll();
+  return response;
+};
+
 module.exports = {
   createUser,
+  getAllUsers,
 };

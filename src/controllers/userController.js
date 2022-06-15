@@ -12,9 +12,9 @@ const createUser = async (req, res, next) => {
   }
 };
 
-const getAllUsers = async (req, res, next) => {
+const getAllUsers = async (_req, res, next) => {
   try {
-    const response = await userService.getAllUsers(req.body);
+    const response = await userService.getAllUsers();
     return res.status(200).json(response);
   } catch (e) {
     next(e);
