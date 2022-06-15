@@ -20,7 +20,7 @@ const isThereToken = (req) => {
   const token = req.headers.authorization;
   if (!token) {
     const e = new Error(errorMsgs.tokenNotFound);
-    e.status = 500;
+    e.status = 401;
     throw e;
   }
   return token;
@@ -29,16 +29,14 @@ const isThereToken = (req) => {
 const validateToken = async (req, _res, next) => {
   try {
     const token = isThereToken(req);    
-    jwt.verify(token, secret);
-    /* const user = await User.findOne({ where: { email: decoded.data } });
-    if (!user) {
-      const e = new Error(errorMsgs.expiredOrInvalidToken);
-      e.status = 401;
-      throw e;
-    } */
+    jwt.verify(token, secret, (e, _decoded) => {
+      if (e) {
+        e.message = errorMsgs.expiredOrInvalidToken;
+        e.status = 401;
+        throw e;
+      }
+    });
   } catch (e) {
-    e.message = errorMsgs.expiredOrInvalidToken;
-    e.status = 401;
     next(e);
   }
   next();

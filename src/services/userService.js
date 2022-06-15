@@ -9,7 +9,7 @@ const createUser = async (body) => {
 };
 
 const getAllUsers = async () => {
-  const response = await User.findAll();
+  const response = await User.findAll({ attributes: { exclude: ['password'] } });
   return response;
 };
 
