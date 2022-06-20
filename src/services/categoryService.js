@@ -1,7 +1,7 @@
 const { Category } = require('../database/models');
 
-const addCategory = (body) => {
-  const response = Category.create(body);
+const addCategory = async (body) => {
+  const response = await Category.create(body);
   return response;
 };
 

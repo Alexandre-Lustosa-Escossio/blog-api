@@ -1,8 +1,8 @@
 const categoryService = require('../services/categoryService');
 
-const addCategory = (req, res, next) => {
+const addCategory = async (req, res, next) => {
   try {
-    const response = categoryService.addCategory(req.body);
+    const response = await categoryService.addCategory(req.body);
     return res.status(201).json(response);
   } catch (e) {
     next(e);

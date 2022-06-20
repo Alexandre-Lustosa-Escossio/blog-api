@@ -2,6 +2,7 @@ require('dotenv').config();
 const app = require('./api');
 const { requestLogin } = require('./controllers/loginController');
 const { createUser, getAllUsers, getUser } = require('./controllers/userController');
+const { addCategory } = require('./controllers/categoryController');
 const { errorHandler } = require('./middlewares/errorHandler');
 const { loginValidator } = require('./middlewares/loginValidator');
 const createUserValidators = require('./middlewares/createUserValidators');
