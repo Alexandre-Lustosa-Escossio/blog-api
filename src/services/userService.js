@@ -1,5 +1,6 @@
 const { User } = require('../database/models');
 const tokenHandler = require('../middlewares/tokenHandler');
+const errMsgs = require('../helpers/errorMessages.json');
 
 const createUser = async (body) => {
     const response = await User.create(body);
@@ -13,7 +14,18 @@ const getAllUsers = async () => {
   return response;
 };
 
+const getUser = async (id) => {
+  const response = await User.findOne({ where: { id }, attributes: { exclude: ['password'] } });
+  if (!response) {
+    const e = new Error(errMsgs.userDoesntExist);
+    e.status = 404;
+    throw e;
+  }
+  return response;
+};
+
 module.exports = {
   createUser,
   getAllUsers,
+  getUser,
 };
