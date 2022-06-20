@@ -42,7 +42,13 @@ const validateToken = async (req, _res, next) => {
   next();
 };
 
+const decodeToken = (token) => {
+  const decoded = jwt.decode(token, secret);
+  return decoded;
+};
+
 module.exports = {
   generateToken,
   validateToken,
+  decodeToken,
 };
