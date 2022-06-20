@@ -1,3 +1,5 @@
+const categoryService = require('../services/categoryService');
+
 const addCategory = (req, res, next) => {
   try {
     const response = categoryService.addCategory(req.body);
