@@ -12,7 +12,7 @@ const addCategory = async (req, res, next) => {
 const getAllCategories = async (req, res, next) => {
   try {
     const response = await categoryService.getAllCategories();
-    return response;
+    return res.status(200).json(response);
   } catch (e) {
     next(e);
   }

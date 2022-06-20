@@ -6,6 +6,12 @@ const addCategory = async (body) => {
   return response;
 };
 
+const getAllCategories = async () => {
+  const response = await Category.findAll({ attributes: { exclude: ['password'] } });
+  return response;
+};
+
 module.exports = {
   addCategory,
+  getAllCategories,
 };
