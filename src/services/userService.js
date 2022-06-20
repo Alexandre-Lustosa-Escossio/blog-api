@@ -24,8 +24,14 @@ const getUser = async (id) => {
   return response;
 };
 
+const getUserByEmail = async (email) => {
+  const response = await User.findOne({ where: { email }, attributes: { exclude: ['password'] } });
+  return response;
+};
+
 module.exports = {
   createUser,
   getAllUsers,
   getUser,
+  getUserByEmail,
 };
