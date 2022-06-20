@@ -11,7 +11,7 @@ const addCategory = async (req, res, next) => {
 
 const getAllCategories = async (req, res, next) => {
   try {
-    const response = await categoryService.findAll({ attributes: { exclude: ['password'] } });
+    const response = await categoryService.getAllCategories();
     return response;
   } catch (e) {
     next(e);
