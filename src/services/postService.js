@@ -2,6 +2,7 @@ const { BlogPost, User, Category } = require('../database/models');
 const tokenHandler = require('../middlewares/tokenHandler');
 const postCategoryService = require('./postCategoryService');
 const userService = require('./userService');
+const errMsgs = require('../helpers/errorMessages.json');
 
 const addPostCategories = async (categoryIds, postId) => {
   try {
@@ -48,7 +49,27 @@ const getAllPosts = async () => {
   return response;
 };
 
+const getPost = async (id) => {
+  const response = await BlogPost.findOne({
+    where: { id },
+    include: [
+      { model: User,
+        as: 'user',
+        attributes: { exclude: ['password'] } },
+      { model: Category,
+        as: 'categories' },
+    ],
+  });
+  if (!response) {
+    const e = new Error(errMsgs.postDoesntExist);
+    e.status = 404;
+    throw e;
+  }
+  return response; 
+};
+
 module.exports = {
   addPost,
   getAllPosts,
+  getPost,
 };

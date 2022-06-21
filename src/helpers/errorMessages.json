@@ -7,5 +7,6 @@
   "userAlreadyRegistered": "User already registered",
   "tokenNotFound": "Token not found",
   "expiredOrInvalidToken": "Expired or invalid token",
-  "userDoesntExist": "User does not exist"
+  "userDoesntExist": "User does not exist",
+  "postDoesntExist": "Post does not exist"
 }
