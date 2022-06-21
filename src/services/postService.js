@@ -68,22 +68,18 @@ const getPost = async (id) => {
   return response; 
 };
 
-const updatePost = async ({ body, params: { id } }) => {
+const updatePost = async ({ body, params: { id }, headers: { authorization } }) => {
   const { title, content } = body;
-  const updatedSuccesfully = await BlogPost.update({ title, content }, { where: { id } });
-  /* if (+updatedSuccesfully === 0) {
-      console.log('fail');
-  } */
-  const response = await BlogPost.findOne({
-    where: { id },
-    include: [
-        { model: User,
-          as: 'user',
-          attributes: { exclude: ['password'] } },
-        { model: Category,
-          as: 'categories' },
-    ],
-  });
+  const { data: email } = tokenHandler.decodeToken(authorization);
+  const { id: userId } = await User.findOne({ where: { email } });
+  // caso o post já esteja atualizado, retornará unauthorized user
+  const updatedSuccesfully = await BlogPost.update({ title, content }, { where: { id, userId } });
+  if (+updatedSuccesfully === 0) {
+    const e = new Error('Unauthorized user');
+    e.status = 401;
+    throw e;
+  }
+  const response = await getPost(id);
   return response;
 };
 
