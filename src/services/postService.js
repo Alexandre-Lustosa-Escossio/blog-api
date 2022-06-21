@@ -1,11 +1,11 @@
 const { BlogPost, User, Category, PostCategory } = require('../database/models');
-const tokenHandler = require('../middlewares/tokenHandler');
 const postCategoryService = require('./postCategoryService');
-const userService = require('./userService');
 const errMsgs = require('../helpers/errorMessages.json');
+const { decodeToken } = require('../middlewares/tokenHandler');
+const userService = require('./userService');
 
 const getUserIdFromToken = async (token) => {
-  const { data: userEmail } = tokenHandler.decodeToken(token);
+  const { data: userEmail } = decodeToken(token);
   const { dataValues: { id } } = await userService.getUserByEmail(userEmail);
   return id;
 };
@@ -107,7 +107,6 @@ const deletePost = async ({ headers: { authorization }, params: { id } }) => {
   const userId = await getUserIdFromToken(authorization);
   const post = await returnPostIfExists(id);
   const isNotTheAuthor = await checkIfUserIsAuthor(post, userId);
-  console.log(isNotTheAuthor);
   if (isNotTheAuthor) {
     throw isNotTheAuthor;
   }

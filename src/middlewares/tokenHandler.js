@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const { User } = require('../database/models');
 const errorMsgs = require('../helpers/errorMessages.json');
 
 require('dotenv/config');

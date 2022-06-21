@@ -1,7 +1,7 @@
 require('dotenv').config();
 const app = require('./api');
 const { requestLogin } = require('./controllers/loginController');
-const { createUser, getAllUsers, getUser } = require('./controllers/userController');
+const { createUser, getAllUsers, getUser, deleteUser } = require('./controllers/userController');
 const { addCategory, getAllCategories } = require('./controllers/categoryController');
 const { addPost, getAllPosts, getPost, updatePost, deletePost } = require('./controllers/postController');
 const { errorHandler } = require('./middlewares/errorHandler');
@@ -24,6 +24,7 @@ app.post('/login', loginValidator, requestLogin);
 app.get('/user', validateToken, getAllUsers);
 app.post('/user', Object.values(createUserValidators), createUser);
 app.get('/user/:id', validateToken, getUser);
+app.delete('/user/me', validateToken, deleteUser);
 
 app.get('/categories', validateToken, getAllCategories);
 app.post('/categories', validateToken, nameValidator, addCategory);
