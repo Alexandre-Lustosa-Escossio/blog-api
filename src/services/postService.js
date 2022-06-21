@@ -1,4 +1,4 @@
-const { BlogPost } = require('../database/models');
+const { BlogPost, User, Category } = require('../database/models');
 const tokenHandler = require('../middlewares/tokenHandler');
 const postCategoryService = require('./postCategoryService');
 const userService = require('./userService');
@@ -31,6 +31,24 @@ const addPost = async ({ body, headers }) => {
   return createBlogPostRes;
 };
 
+const getAllPosts = async () => {
+  const response = await BlogPost.findAll({
+    include: [
+      {
+        model: User,
+        as: 'user',
+        attributes: { exclude: ['password'] },
+      },
+      {
+        model: Category,
+        as: 'categories',
+      },
+    ],
+  });
+  return response;
+};
+
 module.exports = {
   addPost,
+  getAllPosts,
 };
