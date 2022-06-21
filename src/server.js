@@ -3,7 +3,12 @@ const app = require('./api');
 const { requestLogin } = require('./controllers/loginController');
 const { createUser, getAllUsers, getUser, deleteUser } = require('./controllers/userController');
 const { addCategory, getAllCategories } = require('./controllers/categoryController');
-const { addPost, getAllPosts, getPost, updatePost, deletePost, getPostsByKeyword } = require('./controllers/postController');
+const { addPost,
+        getAllPosts,
+        getPost,
+        updatePost,
+        deletePost,
+        getPostsByKeyword } = require('./controllers/postController');
 const { errorHandler } = require('./middlewares/errorHandler');
 const { loginValidator } = require('./middlewares/loginValidator');
 const createUserValidators = require('./middlewares/createUserValidators');
