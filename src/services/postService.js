@@ -68,8 +68,28 @@ const getPost = async (id) => {
   return response; 
 };
 
+const updatePost = async ({ body, params: { id } }) => {
+  const { title, content } = body;
+  const updatedSuccesfully = await BlogPost.update({ title, content }, { where: { id } });
+  /* if (+updatedSuccesfully === 0) {
+      console.log('fail');
+  } */
+  const response = await BlogPost.findOne({
+    where: { id },
+    include: [
+        { model: User,
+          as: 'user',
+          attributes: { exclude: ['password'] } },
+        { model: Category,
+          as: 'categories' },
+    ],
+  });
+  return response;
+};
+
 module.exports = {
   addPost,
   getAllPosts,
   getPost,
+  updatePost,
 };

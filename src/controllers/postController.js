@@ -28,8 +28,18 @@ const getPost = async (req, res, next) => {
   }
 };
 
+const updatePost = async (req, res, next) => {
+  try {
+    const response = await postService.updatePost(req);
+    return res.status(200).json(response);
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addPost,
   getAllPosts,
   getPost,
+  updatePost,
 };
