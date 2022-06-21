@@ -9,6 +9,16 @@ const addPost = async (req, res, next) => {
   }
 };
 
+const getAllPosts = async (req, res, next) => {
+  try {
+    const response = await postService.getAllPosts();
+    return res.status(200).json(response);
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addPost,
+  getAllPosts,
 };

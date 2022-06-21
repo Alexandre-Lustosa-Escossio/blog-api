@@ -14,6 +14,7 @@ const addPostCategories = async (categoryIds, postId) => {
 }; 
 
 const addPost = async ({ body, headers }) => {
+  // Refac this function to fulfill SOLID principles
   const { authorization } = headers;
   const { data: userEmail } = tokenHandler.decodeToken(authorization);
   const { dataValues: { id } } = await userService.getUserByEmail(userEmail);
