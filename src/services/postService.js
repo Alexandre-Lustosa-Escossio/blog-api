@@ -1,4 +1,4 @@
-const { BlogPost, User, Category } = require('../database/models');
+const { BlogPost, User, Category, PostCategory } = require('../database/models');
 const tokenHandler = require('../middlewares/tokenHandler');
 const postCategoryService = require('./postCategoryService');
 const userService = require('./userService');
@@ -83,9 +83,18 @@ const updatePost = async ({ body, params: { id }, headers: { authorization } }) 
   return response;
 };
 
+const deletePost = async (id) => {
+  const response = await Promise.all([
+    PostCategory.destroy({ where: { postId: id } }),
+    BlogPost.destroy({ where: { id } }),
+  ]);
+  return response;
+};
+
 module.exports = {
   addPost,
   getAllPosts,
   getPost,
   updatePost,
+  deletePost,
 };
