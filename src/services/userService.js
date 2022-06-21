@@ -43,8 +43,7 @@ const getUserByEmail = async (email, eagerLoading = false) => {
 const deleteUser = async ({ headers: { authorization } }) => {
   const { data: email } = decodeToken(authorization);
   const { id: userId } = await getUserByEmail(email);
-  const response = await User.destroy({ where: { id: userId } });
-  return response;
+  await User.destroy({ where: { id: userId } });
 };
 
 module.exports = {

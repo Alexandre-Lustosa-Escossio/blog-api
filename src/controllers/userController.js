@@ -33,8 +33,8 @@ const getUser = async (req, res, next) => {
 
 const deleteUser = async (req, res, next) => {
   try {
-    const response = await userService.deleteUser(req);
-    return res.status(200).json(response);
+    await userService.deleteUser(req);
+    return res.status(204).json();
   } catch (e) {
     next(e);
   }

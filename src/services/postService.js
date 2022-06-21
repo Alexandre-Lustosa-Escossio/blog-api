@@ -1,4 +1,4 @@
-const { BlogPost, User, Category, PostCategory } = require('../database/models');
+const { BlogPost, User, Category } = require('../database/models');
 const postCategoryService = require('./postCategoryService');
 const errMsgs = require('../helpers/errorMessages.json');
 const { decodeToken } = require('../middlewares/tokenHandler');
