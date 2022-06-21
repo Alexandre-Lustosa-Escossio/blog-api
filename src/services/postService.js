@@ -94,7 +94,10 @@ const updatePost = async ({ body, params: { id }, headers: { authorization } }) 
   const userId = await getUserIdFromToken(authorization);
   const post = await returnPostIfExists(id);
   // caso o post já esteja atualizado, retornará unauthorized user
-  checkIfUserIsAuthor(post, userId);
+  const isNotTheAuthor = await checkIfUserIsAuthor(post, userId);
+  if (isNotTheAuthor) {
+    throw isNotTheAuthor;
+  }
   await BlogPost.update({ title, content }, { where: { id, userId } });
   const response = await getPost(id);
   return response;
