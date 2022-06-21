@@ -4,6 +4,31 @@ const postCategoryService = require('./postCategoryService');
 const userService = require('./userService');
 const errMsgs = require('../helpers/errorMessages.json');
 
+const getUserIdFromToken = async (token) => {
+  const { data: userEmail } = tokenHandler.decodeToken(token);
+  const { dataValues: { id } } = await userService.getUserByEmail(userEmail);
+  return id;
+};
+
+const returnPostIfExists = async (id) => {
+  const post = await BlogPost.findOne({ where: { id } });
+  if (!post) {
+    const e = new Error('Post does not exist');
+    e.status = 404;
+    throw e;
+  }
+  return post;
+};
+
+const checkIfUserIsAuthor = async (post, userId) => {
+  const isUserAuthor = post.userId === userId;
+  if (!isUserAuthor) {
+    const e = new Error('Unauthorized user');
+    e.status = 401;
+    return e;
+  }
+};
+
 const addPostCategories = async (categoryIds, postId) => {
   try {
     await Promise.all(
@@ -17,8 +42,7 @@ const addPostCategories = async (categoryIds, postId) => {
 const addPost = async ({ body, headers }) => {
   // Refac this function to fulfill SOLID principles
   const { authorization } = headers;
-  const { data: userEmail } = tokenHandler.decodeToken(authorization);
-  const { dataValues: { id } } = await userService.getUserByEmail(userEmail);
+  const id = await getUserIdFromToken(authorization);
   const postPayload = { ...body, userId: id };
   const postCategoryIds = postPayload.categoryIds;
   delete postPayload.categoryIds;
@@ -70,23 +94,26 @@ const getPost = async (id) => {
 
 const updatePost = async ({ body, params: { id }, headers: { authorization } }) => {
   const { title, content } = body;
-  const { data: email } = tokenHandler.decodeToken(authorization);
-  const { id: userId } = await User.findOne({ where: { email } });
+  const userId = await getUserIdFromToken(authorization);
+  const post = await returnPostIfExists(id);
   // caso o post já esteja atualizado, retornará unauthorized user
-  const updatedSuccesfully = await BlogPost.update({ title, content }, { where: { id, userId } });
-  if (+updatedSuccesfully === 0) {
-    const e = new Error('Unauthorized user');
-    e.status = 401;
-    throw e;
-  }
+  checkIfUserIsAuthor(post, userId);
+  await BlogPost.update({ title, content }, { where: { id, userId } });
   const response = await getPost(id);
   return response;
 };
 
-const deletePost = async (id) => {
+const deletePost = async ({ headers: { authorization }, params: { id } }) => {
+  const userId = await getUserIdFromToken(authorization);
+  const post = await returnPostIfExists(id);
+  const isNotTheAuthor = await checkIfUserIsAuthor(post, userId);
+  console.log(isNotTheAuthor);
+  if (isNotTheAuthor) {
+    throw isNotTheAuthor;
+  }
   const response = await Promise.all([
     PostCategory.destroy({ where: { postId: id } }),
-    BlogPost.destroy({ where: { id } }),
+    BlogPost.destroy({ where: { id, userId } }),
   ]);
   return response;
 };

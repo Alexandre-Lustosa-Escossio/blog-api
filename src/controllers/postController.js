@@ -39,8 +39,7 @@ const updatePost = async (req, res, next) => {
 
 const deletePost = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const response = await postService.deletePost(id);
+    const response = await postService.deletePost(req);
     return res.status(204).json(response);
   } catch (e) {
     next(e);
