@@ -110,10 +110,7 @@ const deletePost = async ({ headers: { authorization }, params: { id } }) => {
   if (isNotTheAuthor) {
     throw isNotTheAuthor;
   }
-  const response = await Promise.all([
-    PostCategory.destroy({ where: { postId: id } }),
-    BlogPost.destroy({ where: { id, userId } }),
-  ]);
+  const response = await BlogPost.destroy({ where: { id, userId } });
   return response;
 };
 
