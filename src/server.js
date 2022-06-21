@@ -9,6 +9,7 @@ const { loginValidator } = require('./middlewares/loginValidator');
 const createUserValidators = require('./middlewares/createUserValidators');
 const { validateToken } = require('./middlewares/tokenHandler');
 const { nameValidator } = require('./middlewares/nameValidator');
+const { createPostValidator } = require('./middlewares/createPostValidator');
 
 // não remova a variável `API_PORT` ou o `listen`
 const port = process.env.API_PORT || 3000;
@@ -27,7 +28,7 @@ app.get('/user/:id', validateToken, getUser);
 app.get('/categories', validateToken, getAllCategories);
 app.post('/categories', validateToken, nameValidator, addCategory);
 
-app.post('/post', validateToken, addPost);
+app.post('/post', validateToken, createPostValidator, addPost);
 
 app.use(errorHandler);
 
