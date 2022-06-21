@@ -1,8 +1,21 @@
+const { Op } = require('sequelize');
 const { BlogPost, User, Category } = require('../database/models');
 const postCategoryService = require('./postCategoryService');
 const errMsgs = require('../helpers/errorMessages.json');
 const { decodeToken } = require('../middlewares/tokenHandler');
 const userService = require('./userService');
+
+const eagerLoading = [
+    {
+      model: User,
+      as: 'user',
+      attributes: { exclude: ['password'] },
+    },
+    {
+      model: Category,
+      as: 'categories',
+    },
+  ];
 
 const getUserIdFromToken = async (token) => {
   const { data: userEmail } = decodeToken(token);
@@ -58,17 +71,7 @@ const addPost = async ({ body, headers }) => {
 
 const getAllPosts = async () => {
   const response = await BlogPost.findAll({
-    include: [
-      {
-        model: User,
-        as: 'user',
-        attributes: { exclude: ['password'] },
-      },
-      {
-        model: Category,
-        as: 'categories',
-      },
-    ],
+    include: eagerLoading,
   });
   return response;
 };
@@ -76,13 +79,7 @@ const getAllPosts = async () => {
 const getPost = async (id) => {
   const response = await BlogPost.findOne({
     where: { id },
-    include: [
-      { model: User,
-        as: 'user',
-        attributes: { exclude: ['password'] } },
-      { model: Category,
-        as: 'categories' },
-    ],
+    include: eagerLoading,
   });
   if (!response) {
     const e = new Error(errMsgs.postDoesntExist);
@@ -114,10 +111,27 @@ const deletePost = async ({ headers: { authorization }, params: { id } }) => {
   return response;
 };
 
+const getPostsByKeyword = async (queryParam) => {
+  if (!queryParam) {
+    const response = await getAllPosts();
+    return response;
+  }
+  const response = await BlogPost.findAll({
+    where: {
+      [Op.or]: [
+        { title: { [Op.like]: `%${queryParam}%` } },
+        { content: { [Op.like]: `%${queryParam}%` } },
+      ] },
+    include: eagerLoading,
+  });
+  return response;
+};
+
 module.exports = {
   addPost,
   getAllPosts,
   getPost,
   updatePost,
   deletePost,
+  getPostsByKeyword,
 };
