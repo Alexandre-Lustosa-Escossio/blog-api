@@ -1,3 +1,5 @@
+const postCategoryService = require('../services/postCategoryService');
+
 const addPostCategory = async (userId, categoryId) => {
   try {
     const response = await postCategoryService.addPostCategory({ userId, categoryId });
