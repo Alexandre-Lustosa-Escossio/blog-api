@@ -28,12 +28,13 @@ const isThereToken = (req) => {
 const validateToken = async (req, res, next) => {
   try {
     const token = isThereToken(req);    
-    res.locals.payload = jwt.verify(token, secret, (e, _decoded) => {
+    jwt.verify(token, secret, (e, decoded) => {
       if (e) {
         e.message = errorMsgs.expiredOrInvalidToken;
         e.status = 401;
         throw e;
       }
+      res.locals.payload = decoded;
     });
   } catch (e) {
     next(e);

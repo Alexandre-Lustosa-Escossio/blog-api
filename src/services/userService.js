@@ -1,11 +1,10 @@
 const { User, BlogPost, PostCategory } = require('../database/models');
-const { generateToken, decodeToken } = require('../middlewares/tokenHandler');
+const { generateToken } = require('../middlewares/tokenHandler');
 const errMsgs = require('../helpers/errorMessages.json');
 
 const createUser = async (body) => {
     const response = await User.create(body);
     const { email } = response;
-    console.log(generateToken);
     const token = generateToken(email);
     return { token };
 };
@@ -40,8 +39,8 @@ const getUserByEmail = async (email, eagerLoading = false) => {
   return response;
 };
 
-const deleteUser = async ({ headers: { authorization } }) => {
-  const { data: email } = decodeToken(authorization);
+const deleteUser = async (res) => {
+  const { data: email } = res.locals.payload;
   const { id: userId } = await getUserByEmail(email);
   await User.destroy({ where: { id: userId } });
 };
