@@ -1,7 +1,6 @@
 const { Op } = require('sequelize');
 const Sequelize = require('sequelize');
 const { BlogPost, User, Category, PostCategory } = require('../database/models');
-const postCategoryService = require('./postCategoryService');
 const errMsgs = require('../helpers/errorMessages.json');
 const { decodeToken } = require('../middlewares/tokenHandler');
 const userService = require('./userService');
@@ -47,7 +46,7 @@ const checkIfUserIsAuthor = async (post, userId) => {
   }
 };
 
-const linkCatToPost = async (categoryIds, postId) => {
+const linkCatToPost = (categoryIds, postId) => {
   const listOfCatsWithPostId = categoryIds.map((categoryId) => ({ categoryId, postId }
   ));
   return listOfCatsWithPostId;
@@ -58,11 +57,12 @@ const addPost = async ({ body, headers }) => {
   const { authorization } = headers;
   const id = await getUserIdFromToken(authorization);
   const postPayload = { ...body, userId: id };
-  const postCategories = linkCatToPost(postPayload.categoryIds, id);
+  const { categoryIds } = postPayload;
   delete postPayload.categoryIds;
   const transaction = await sequelize.transaction();
   try {
     const createBlogPostRes = await BlogPost.create(postPayload, { transaction });
+    const postCategories = linkCatToPost(categoryIds, createBlogPostRes.dataValues.id);
     await PostCategory.bulkCreate(postCategories, { transaction });
     await transaction.commit();
     return createBlogPostRes;
