@@ -25,10 +25,10 @@ const isThereToken = (req) => {
   return token;
 };
 
-const validateToken = async (req, _res, next) => {
+const validateToken = async (req, res, next) => {
   try {
     const token = isThereToken(req);    
-    jwt.verify(token, secret, (e, _decoded) => {
+    res.locals.payload = jwt.verify(token, secret, (e, _decoded) => {
       if (e) {
         e.message = errorMsgs.expiredOrInvalidToken;
         e.status = 401;
