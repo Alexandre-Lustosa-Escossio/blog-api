@@ -1,9 +1,14 @@
 const { Op } = require('sequelize');
-const { BlogPost, User, Category } = require('../database/models');
+const Sequelize = require('sequelize');
+const { BlogPost, User, Category, PostCategory } = require('../database/models');
 const postCategoryService = require('./postCategoryService');
 const errMsgs = require('../helpers/errorMessages.json');
 const { decodeToken } = require('../middlewares/tokenHandler');
 const userService = require('./userService');
+
+const config = require('../database/config/config');
+
+const sequelize = new Sequelize(config.development);
 
 const eagerLoading = [
     {
@@ -42,14 +47,10 @@ const checkIfUserIsAuthor = async (post, userId) => {
   }
 };
 
-const addPostCategories = async (categoryIds, postId) => {
-  try {
-    await Promise.all(
-      categoryIds.map((categoryId) => postCategoryService.addPostCategory({ categoryId, postId })),
-    );
-  } catch (e) {
-    return e;
-  }
+const linkCatToPost = async (categoryIds, postId) => {
+  const listOfCatsWithPostId = categoryIds.map((categoryId) => ({ categoryId, postId }
+  ));
+  return listOfCatsWithPostId;
 }; 
 
 const addPost = async ({ body, headers }) => {
@@ -57,16 +58,20 @@ const addPost = async ({ body, headers }) => {
   const { authorization } = headers;
   const id = await getUserIdFromToken(authorization);
   const postPayload = { ...body, userId: id };
-  const postCategoryIds = postPayload.categoryIds;
+  const postCategories = linkCatToPost(postPayload.categoryIds, id);
   delete postPayload.categoryIds;
-  const createBlogPostRes = await BlogPost.create(postPayload);
-  const didRequestFail = await addPostCategories(postCategoryIds, createBlogPostRes.id);
-  if (didRequestFail) {
-    const e = new Error('"categoryIds" not found');
+  const transaction = await sequelize.transaction();
+  try {
+    const createBlogPostRes = await BlogPost.create(postPayload, { transaction });
+    await PostCategory.bulkCreate(postCategories, { transaction });
+    await transaction.commit();
+    return createBlogPostRes;
+  } catch (e) {
+    await transaction.rollback();
+    e.message = '"categoryIds" not found';
     e.status = 400;
     throw e;    
   }
-  return createBlogPostRes;
 };
 
 const getAllPosts = async () => {
